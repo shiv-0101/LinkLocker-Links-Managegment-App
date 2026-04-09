@@ -343,3 +343,123 @@ Mitigation: strict MVP boundaries and phased backlog.
 5. Private boards are inaccessible to other users.
 6. Discover shows public content and supports copy-to-my-board.
 7. End-to-end flow works on deployed environment.
+
+## 16. After NOW (Execution Plan From Demo UI to Working Product)
+
+This section defines the exact sequence to move from current demo UI to fully functional MVP.
+
+### Current Status (As of April 9, 2026)
+1. Frontend demo UI is implemented.
+2. Routing and page structure are available.
+3. Data is currently mocked in hooks.
+4. Real authentication and database persistence are pending.
+
+### Phase A: Database Foundation (Supabase First)
+
+#### A1. Create Production Schema
+1. Create `boards` table with: `id`, `user_id`, `name`, `description`, `is_public`, `created_at`.
+2. Create `links` table with: `id`, `board_id`, `user_id`, `title`, `url`, `metadata`, `created_at`.
+3. Add foreign key: `links.board_id -> boards.id` with cascade delete.
+4. Add indexes: `boards.user_id`, `boards.is_public`, `links.board_id`, `links.user_id`, `links.created_at`.
+
+#### A2. Enable Row Level Security
+1. Enable RLS on both `boards` and `links`.
+2. Add public read policy for public boards and links belonging to public boards.
+3. Add owner-only CRUD policies for boards and links.
+
+#### A3. Definition of Done
+1. SQL migration runs without errors.
+2. Anonymous reads only public content.
+3. Authenticated users can only mutate own data.
+
+### Phase B: Clerk Authentication Integration
+
+#### B1. Frontend Auth Wiring
+1. Wrap app with Clerk provider.
+2. Replace mock auth hook with Clerk user/session data.
+3. Update navbar profile/sign-in state from Clerk.
+
+#### B2. Route Protection
+1. Keep landing and discover public.
+2. Guard dashboard, create, edit, delete actions.
+3. Redirect unauthenticated users to sign-in.
+
+#### B3. Definition of Done
+1. Sign-in/sign-out works.
+2. Protected pages block guests.
+3. Current user id is available where needed for ownership checks.
+
+### Phase C: Replace Mock Data With Real Data
+
+#### C1. Boards Data Flow
+1. Replace `useBoards` mock state with Supabase queries.
+2. Implement create/update/delete board actions.
+3. Refresh board list after each mutation.
+
+#### C2. Links Data Flow
+1. Replace `useLinks` mock state with Supabase queries by board id.
+2. Implement create/update/delete link actions.
+3. Preserve ownership behavior: edit icon only when `link.user_id == current_user_id`.
+
+#### C3. Definition of Done
+1. Reloading the app keeps data (real persistence).
+2. New links and boards are visible after refresh.
+3. Unauthorized edit/delete is blocked both in UI and by RLS.
+
+### Phase D: Metadata Pipeline (URL Enrichment)
+
+#### D1. Save Flow Upgrade
+1. On link save, call metadata endpoint.
+2. Store metadata JSON in `links.metadata`.
+3. Add fallback when metadata fetch fails (still save link).
+
+#### D2. Validation and Error Handling
+1. Validate URL format before submit.
+2. Show user-friendly error on invalid URL/network failure.
+3. Avoid duplicate submit by disabling save while request is active.
+
+#### D3. Definition of Done
+1. Most valid URLs save with metadata.
+2. Invalid URLs are rejected with clear messages.
+3. Save flow remains under target interaction time.
+
+### Phase E: Discover and Copy-to-Board (Real)
+
+#### E1. Discover Query
+1. Fetch only public boards.
+2. Show board owner info and counts.
+3. Paginate or limit initial load for performance.
+
+#### E2. Copy Flow
+1. Allow authenticated user to copy a discovered link to own board.
+2. Enforce ownership for destination board.
+3. Prevent duplicate inserts when copying same URL into same board (optional MVP+).
+
+#### E3. Definition of Done
+1. Discover lists only public data.
+2. Copy action creates link in selected owned board.
+3. Guests are prompted to sign in for copy action.
+
+### Phase F: Hardening, QA, and Deployment
+
+#### F1. QA Checklist
+1. Create, edit, delete board.
+2. Add, edit, delete link.
+3. Public vs private visibility.
+4. Discover browse and copy.
+5. Mobile responsive checks on landing, dashboard, board, discover.
+
+#### F2. Deployment Checklist
+1. Set production env vars (Clerk + Supabase + API).
+2. Deploy frontend and backend.
+3. Run smoke test on deployed URLs.
+
+#### F3. Definition of Done
+1. End-to-end user journey works in production.
+2. No critical console or API errors on main flows.
+3. PRD acceptance criteria are fully satisfied.
+
+### Recommended Start Task (Do This First)
+1. Implement Phase A1 and A2 SQL migration in Supabase.
+2. Share migration result and policy output.
+3. Then proceed immediately to Phase B (Clerk integration).
