@@ -1,9 +1,11 @@
 import BoardGrid from '../components/boards/BoardGrid'
 import QuickAddBar from '../components/links/QuickAddBar'
+import { useAuth } from '../hooks/useAuth'
 import { useBoards } from '../hooks/useBoards'
 import { useLinks } from '../hooks/useLinks'
 
 function Dashboard() {
+  const { user } = useAuth()
   const { boards } = useBoards()
   const { addLink } = useLinks()
 
@@ -12,6 +14,7 @@ function Dashboard() {
       title: title || url,
       url,
       boardId,
+      userId: user.id,
     })
   }
 

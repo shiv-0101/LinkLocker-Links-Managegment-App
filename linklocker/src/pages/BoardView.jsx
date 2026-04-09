@@ -1,11 +1,13 @@
 import { useMemo } from 'react'
 import { useParams } from 'react-router-dom'
 import LinkGrid from '../components/links/LinkGrid'
+import { useAuth } from '../hooks/useAuth'
 import { useBoards } from '../hooks/useBoards'
 import { useLinks } from '../hooks/useLinks'
 
 function BoardView() {
   const { id } = useParams()
+  const { user } = useAuth()
   const { boards } = useBoards()
   const { links } = useLinks(id)
 
@@ -33,7 +35,7 @@ function BoardView() {
           </span>
         </div>
       </section>
-      <LinkGrid links={links} />
+      <LinkGrid links={links} currentUserId={user.id} />
     </div>
   )
 }
