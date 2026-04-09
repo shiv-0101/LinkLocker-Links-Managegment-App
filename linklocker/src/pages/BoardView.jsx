@@ -8,7 +8,7 @@ import { useLinks } from '../hooks/useLinks'
 function BoardView() {
   const { id } = useParams()
   const { user } = useAuth()
-  const { boards } = useBoards()
+  const { boards } = useBoards(user?.id)
   const { links } = useLinks(id)
 
   const board = useMemo(() => boards.find((item) => item.id === id), [boards, id])

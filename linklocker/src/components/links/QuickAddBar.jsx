@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 function QuickAddBar({ boards, onSave }) {
   const [form, setForm] = useState({
@@ -6,6 +6,13 @@ function QuickAddBar({ boards, onSave }) {
     url: '',
     boardId: boards[0]?.id ?? '',
   })
+
+  useEffect(() => {
+    setForm((prev) => ({
+      ...prev,
+      boardId: prev.boardId || boards[0]?.id || '',
+    }))
+  }, [boards])
 
   function handleSubmit(event) {
     event.preventDefault()
