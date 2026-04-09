@@ -35,7 +35,7 @@ function BoardView() {
           </span>
         </div>
       </section>
-      <LinkGrid links={links} currentUserId={user.id} />
+      <LinkGrid links={links} currentUserId={user?.id} />
     </div>
   )
 }

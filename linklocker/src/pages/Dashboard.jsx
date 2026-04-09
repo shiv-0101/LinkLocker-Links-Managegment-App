@@ -14,7 +14,7 @@ function Dashboard() {
       title: title || url,
       url,
       boardId,
-      userId: user.id,
+      userId: user?.id || 'unknown-user',
     })
   }
 
