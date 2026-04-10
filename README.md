@@ -5,7 +5,20 @@ You can organize links into boards, keep boards private or public, and discover 
 
 This README explains everything in simple language so anyone can run this project on their own machine.
 
+## Screenshots
+
+<p align="center">
+	<img src="linklocker/public/homepage.png" alt="Home" width="48%" />
+	<img src="linklocker/public/authentication.png" alt="Authentication" width="48%" />
+</p>
+<p align="center">
+	<img src="linklocker/public/createboard.png" alt="Create Board" width="48%" />
+	<img src="linklocker/public/discover%20page.png" alt="Discover" width="48%" />
+</p>
+
 ## 1. What This Project Uses
+
+
 
 - Frontend: React + Vite + Tailwind
 - Auth: Clerk
