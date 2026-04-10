@@ -1,11 +1,26 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
-import { supabase, hasSupabaseConfig } from '../lib/supabase'
+import { hasSupabaseConfig } from '../lib/supabase'
+import { useSupabaseClient } from './useSupabaseClient'
 
 const fallbackBoards = [
   { id: 'b1', name: 'UI Inspiration', description: 'Design and UX links', isPublic: true, linkCount: 18 },
   { id: 'b2', name: 'Learning', description: 'Courses and docs', isPublic: false, linkCount: 42 },
   { id: 'b3', name: 'Startup Research', description: 'Market and GTM references', isPublic: false, linkCount: 9 },
 ]
+
+function formatAuthErrorMessage(error) {
+  const message = error?.message || ''
+
+  if (message.includes('No JWT template exists with name: supabase')) {
+    return 'Clerk JWT template "supabase" is missing. Create it in Clerk, then sign out and sign in again.'
+  }
+
+  if (message.includes('JWT') && message.includes('claim')) {
+    return 'Your Clerk token is missing claims required by Supabase RLS. Recheck Clerk JWT template "supabase".'
+  }
+
+  return message
+}
 
 function mapBoard(row, linkCounts = {}) {
   const linkCount = row.link_count ?? linkCounts[row.id] ?? 0
@@ -21,7 +36,7 @@ function mapBoard(row, linkCounts = {}) {
   }
 }
 
-async function fetchLinkCounts(boardIds = []) {
+async function fetchLinkCounts(supabase, boardIds = []) {
   if (!supabase || boardIds.length === 0) {
     return {}
   }
@@ -39,6 +54,7 @@ async function fetchLinkCounts(boardIds = []) {
 }
 
 export function useBoards(userId) {
+  const supabase = useSupabaseClient()
   const [boards, setBoards] = useState(hasSupabaseConfig ? [] : fallbackBoards)
   const [isLoading, setIsLoading] = useState(hasSupabaseConfig)
   const [error, setError] = useState(null)
@@ -64,21 +80,21 @@ export function useBoards(userId) {
     const { data, error: queryError } = await query.order('created_at', { ascending: false })
 
     if (queryError) {
-      setError(queryError.message)
+      setError(formatAuthErrorMessage(queryError))
       setBoards([])
       setIsLoading(false)
       return
     }
 
     const mappedBoards = (data || []).map((row) => mapBoard(row))
-    const linkCounts = await fetchLinkCounts(mappedBoards.map((board) => board.id))
+    const linkCounts = await fetchLinkCounts(supabase, mappedBoards.map((board) => board.id))
     setBoards(mappedBoards.map((board) => ({ ...board, linkCount: linkCounts[board.id] ?? board.linkCount })))
     setIsLoading(false)
-  }, [userId])
+  }, [supabase, userId])
 
   useEffect(() => {
     loadBoards().catch((loadError) => {
-      setError(loadError.message)
+      setError(formatAuthErrorMessage(loadError))
       setBoards([])
       setIsLoading(false)
     })
@@ -113,12 +129,70 @@ export function useBoards(userId) {
       .single()
 
     if (insertError) {
-      throw insertError
+      if (insertError.code === '42501') {
+        throw new Error('RLS blocked board creation. Configure Clerk JWT template "supabase" and sign in again.')
+      }
+      throw new Error(formatAuthErrorMessage(insertError))
     }
 
     const createdBoard = mapBoard(data)
     setBoards((prev) => [createdBoard, ...prev.filter((board) => board.id !== createdBoard.id)])
     return createdBoard
+  }
+
+  async function updateBoard(boardId, updates) {
+    if (!supabase) {
+      setBoards((prev) =>
+        prev.map((board) => (board.id === boardId ? { ...board, ...updates } : board)),
+      )
+      return
+    }
+
+    const dbUpdates = {}
+    if (Object.prototype.hasOwnProperty.call(updates, 'name')) {
+      dbUpdates.name = updates.name
+    }
+    if (Object.prototype.hasOwnProperty.call(updates, 'description')) {
+      dbUpdates.description = updates.description
+    }
+    if (Object.prototype.hasOwnProperty.call(updates, 'isPublic')) {
+      dbUpdates.is_public = Boolean(updates.isPublic)
+    }
+
+    const { data, error: updateError } = await supabase
+      .from('boards')
+      .update(dbUpdates)
+      .eq('id', boardId)
+      .select('*')
+      .single()
+
+    if (updateError) {
+      if (updateError.code === '42501') {
+        throw new Error('RLS blocked board update. Configure Clerk JWT template "supabase" and sign in again.')
+      }
+      throw new Error(formatAuthErrorMessage(updateError))
+    }
+
+    const updatedBoard = mapBoard(data)
+    setBoards((prev) => prev.map((board) => (board.id === boardId ? { ...board, ...updatedBoard } : board)))
+  }
+
+  async function deleteBoard(boardId) {
+    if (!supabase) {
+      setBoards((prev) => prev.filter((board) => board.id !== boardId))
+      return
+    }
+
+    const { error: deleteError } = await supabase.from('boards').delete().eq('id', boardId)
+
+    if (deleteError) {
+      if (deleteError.code === '42501') {
+        throw new Error('RLS blocked board deletion. Configure Clerk JWT template "supabase" and sign in again.')
+      }
+      throw new Error(formatAuthErrorMessage(deleteError))
+    }
+
+    setBoards((prev) => prev.filter((board) => board.id !== boardId))
   }
 
   async function refresh() {
@@ -130,6 +204,8 @@ export function useBoards(userId) {
     publicBoards,
     ownedBoards,
     createBoard,
+    updateBoard,
+    deleteBoard,
     refresh,
     isLoading,
     error,

@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { apiPost } from '../config/api'
-import { supabase, hasSupabaseConfig } from '../lib/supabase'
+import { hasSupabaseConfig } from '../lib/supabase'
+import { useSupabaseClient } from './useSupabaseClient'
 
 const seedLinks = [
   {
@@ -29,6 +30,20 @@ const seedLinks = [
   },
 ]
 
+function formatAuthErrorMessage(error) {
+  const message = error?.message || ''
+
+  if (message.includes('No JWT template exists with name: supabase')) {
+    return 'Clerk JWT template "supabase" is missing. Create it in Clerk, then sign out and sign in again.'
+  }
+
+  if (message.includes('JWT') && message.includes('claim')) {
+    return 'Your Clerk token is missing claims required by Supabase RLS. Recheck Clerk JWT template "supabase".'
+  }
+
+  return message
+}
+
 function mapLink(row) {
   return {
     id: row.id,
@@ -42,7 +57,9 @@ function mapLink(row) {
   }
 }
 
-export function useLinks(boardId) {
+export function useLinks(boardId, options = {}) {
+  const { userId, limit } = options
+  const supabase = useSupabaseClient()
   const [links, setLinks] = useState(hasSupabaseConfig ? [] : seedLinks)
   const [isLoading, setIsLoading] = useState(hasSupabaseConfig && Boolean(boardId))
   const [error, setError] = useState(null)
@@ -54,23 +71,28 @@ export function useLinks(boardId) {
       return
     }
 
-    if (!boardId) {
+    setIsLoading(true)
+    setError(null)
+
+    let query = supabase.from('links').select('*').order('created_at', { ascending: false })
+
+    if (boardId) {
+      query = query.eq('board_id', boardId)
+    } else if (userId) {
+      query = query.eq('user_id', userId)
+      if (limit) {
+        query = query.limit(limit)
+      }
+    } else {
       setLinks([])
       setIsLoading(false)
       return
     }
 
-    setIsLoading(true)
-    setError(null)
-
-    const { data, error: queryError } = await supabase
-      .from('links')
-      .select('*')
-      .eq('board_id', boardId)
-      .order('created_at', { ascending: false })
+    const { data, error: queryError } = await query
 
     if (queryError) {
-      setError(queryError.message)
+      setError(formatAuthErrorMessage(queryError))
       setLinks([])
       setIsLoading(false)
       return
@@ -78,11 +100,11 @@ export function useLinks(boardId) {
 
     setLinks((data || []).map(mapLink))
     setIsLoading(false)
-  }, [boardId])
+  }, [boardId, limit, supabase, userId])
 
   useEffect(() => {
     loadLinks().catch((loadError) => {
-      setError(loadError.message)
+      setError(formatAuthErrorMessage(loadError))
       setLinks([])
       setIsLoading(false)
     })
@@ -126,7 +148,10 @@ export function useLinks(boardId) {
       .single()
 
     if (insertError) {
-      throw insertError
+      if (insertError.code === '42501') {
+        throw new Error('RLS blocked link creation. Configure Clerk JWT template "supabase" and sign in again.')
+      }
+      throw new Error(formatAuthErrorMessage(insertError))
     }
 
     const nextLink = mapLink(data)

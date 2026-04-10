@@ -5,6 +5,10 @@ const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || ''
 
 export const hasSupabaseConfig = Boolean(supabaseUrl && supabaseAnonKey)
 
-export const supabase = hasSupabaseConfig
-  ? createClient(supabaseUrl, supabaseAnonKey)
-  : null
+export function createSupabaseClient(options = {}) {
+  if (!hasSupabaseConfig) {
+    return null
+  }
+
+  return createClient(supabaseUrl, supabaseAnonKey, options)
+}

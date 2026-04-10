@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom'
 
-function BoardCard({ board }) {
+function BoardCard({ board, onToggleVisibility, onDelete, isUpdating }) {
   return (
     <article className="flex h-full flex-col justify-between rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition hover:border-slate-300 hover:shadow-md">
       <div className="space-y-4">
@@ -13,13 +13,29 @@ function BoardCard({ board }) {
         <p className="text-sm leading-6 text-slate-600">{board.description}</p>
         <p className="text-sm font-medium text-slate-500">{board.linkCount} links</p>
       </div>
-      <div className="mt-5 flex">
+      <div className="mt-5 flex flex-wrap gap-2">
         <Link
           to={`/board/${board.id}`}
           className="inline-flex rounded-lg bg-slate-900 px-4 py-2 text-sm font-semibold text-white transition hover:bg-slate-800"
         >
           Open Board
         </Link>
+        <button
+          type="button"
+          className="inline-flex rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-60"
+          onClick={() => onToggleVisibility(board)}
+          disabled={isUpdating}
+        >
+          {board.isPublic ? 'Make Private' : 'Make Public'}
+        </button>
+        <button
+          type="button"
+          className="inline-flex rounded-lg border border-red-200 bg-red-50 px-4 py-2 text-sm font-semibold text-red-700 transition hover:bg-red-100 disabled:cursor-not-allowed disabled:opacity-60"
+          onClick={() => onDelete(board)}
+          disabled={isUpdating}
+        >
+          Delete
+        </button>
       </div>
     </article>
   )
