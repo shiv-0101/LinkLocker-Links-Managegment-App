@@ -1,9 +1,13 @@
 import { useMemo } from 'react'
 import { useAuth as useClerkAuth } from '@clerk/clerk-react'
-import { createSupabaseClient } from '../lib/supabase'
+import { createSupabaseClient, isDemoMode } from '../lib/supabase'
 
 export function useSupabaseClient() {
   const { getToken } = useClerkAuth()
+
+  if (isDemoMode) {
+    return null
+  }
 
   return useMemo(
     () =>
@@ -11,18 +15,15 @@ export function useSupabaseClient() {
         accessToken: async () => {
           try {
             const templateToken = await getToken({ template: 'supabase' })
-            if (templateToken) {
-              return templateToken
-            }
+            return templateToken || null
           } catch (error) {
             const message = error?.message || ''
-            if (!message.includes('No JWT template exists with name: supabase')) {
-              throw error
+            if (message.includes('No JWT template exists with name: supabase')) {
+              return null
             }
-          }
 
-          const defaultToken = await getToken()
-          return defaultToken || null
+            throw error
+          }
         },
       }),
     [getToken],

@@ -1,11 +1,56 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
-import { hasSupabaseConfig } from '../lib/supabase'
+import { hasSupabaseConfig, isDemoMode } from '../lib/supabase'
 import { useSupabaseClient } from './useSupabaseClient'
 
 const fallbackBoards = [
-  { id: 'b1', name: 'UI Inspiration', description: 'Design and UX links', isPublic: true, linkCount: 18 },
-  { id: 'b2', name: 'Learning', description: 'Courses and docs', isPublic: false, linkCount: 42 },
-  { id: 'b3', name: 'Startup Research', description: 'Market and GTM references', isPublic: false, linkCount: 9 },
+  {
+    id: 'b1',
+    userId: 'demo-user',
+    name: 'Internships',
+    description: 'Internship roles, hiring pages, and career starters',
+    isPublic: true,
+    linkCount: 10,
+  },
+  {
+    id: 'b2',
+    userId: 'demo-user',
+    name: 'Courses',
+    description: 'Useful courses for design, coding, and business',
+    isPublic: true,
+    linkCount: 10,
+  },
+  {
+    id: 'b3',
+    userId: 'demo-user',
+    name: 'Top AI Tools',
+    description: 'Popular AI tools for writing, coding, and research',
+    isPublic: true,
+    linkCount: 10,
+  },
+  {
+    id: 'b4',
+    userId: 'demo-user',
+    name: 'Design Resources',
+    description: 'UI ideas, design systems, and inspiration',
+    isPublic: true,
+    linkCount: 10,
+  },
+  {
+    id: 'b5',
+    userId: 'demo-user',
+    name: 'Startup Research',
+    description: 'Product, market, and growth references',
+    isPublic: true,
+    linkCount: 10,
+  },
+  {
+    id: 'b6',
+    userId: 'demo-user',
+    name: 'Productivity',
+    description: 'Workflows, habits, and tools to stay organized',
+    isPublic: true,
+    linkCount: 10,
+  },
 ]
 
 function formatAuthErrorMessage(error) {
@@ -55,12 +100,12 @@ async function fetchLinkCounts(supabase, boardIds = []) {
 
 export function useBoards(userId) {
   const supabase = useSupabaseClient()
-  const [boards, setBoards] = useState(hasSupabaseConfig ? [] : fallbackBoards)
-  const [isLoading, setIsLoading] = useState(hasSupabaseConfig)
+  const [boards, setBoards] = useState(isDemoMode || !hasSupabaseConfig ? fallbackBoards : [])
+  const [isLoading, setIsLoading] = useState(isDemoMode ? false : hasSupabaseConfig)
   const [error, setError] = useState(null)
 
   const loadBoards = useCallback(async () => {
-    if (!supabase) {
+    if (isDemoMode || !supabase) {
       setBoards(fallbackBoards)
       setIsLoading(false)
       return
@@ -101,15 +146,19 @@ export function useBoards(userId) {
   }, [loadBoards])
 
   const publicBoards = useMemo(() => boards.filter((board) => board.isPublic), [boards])
-  const ownedBoards = useMemo(
-    () => (userId ? boards.filter((board) => board.userId === userId) : []),
-    [boards, userId],
-  )
+  const ownedBoards = useMemo(() => {
+    if (isDemoMode) {
+      return boards
+    }
+
+    return userId ? boards.filter((board) => board.userId === userId) : []
+  }, [boards, userId])
 
   async function createBoard(payload) {
-    if (!supabase) {
+    if (isDemoMode || !supabase) {
       const nextBoard = {
         id: `b${Date.now()}`,
+        userId: payload.userId || 'demo-user',
         linkCount: 0,
         ...payload,
       }
@@ -141,7 +190,7 @@ export function useBoards(userId) {
   }
 
   async function updateBoard(boardId, updates) {
-    if (!supabase) {
+    if (isDemoMode || !supabase) {
       setBoards((prev) =>
         prev.map((board) => (board.id === boardId ? { ...board, ...updates } : board)),
       )
@@ -178,7 +227,7 @@ export function useBoards(userId) {
   }
 
   async function deleteBoard(boardId) {
-    if (!supabase) {
+    if (isDemoMode || !supabase) {
       setBoards((prev) => prev.filter((board) => board.id !== boardId))
       return
     }

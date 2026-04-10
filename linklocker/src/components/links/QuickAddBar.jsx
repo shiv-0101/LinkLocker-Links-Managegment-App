@@ -4,6 +4,7 @@ function QuickAddBar({ boards, onSave }) {
   const [form, setForm] = useState({
     title: '',
     url: '',
+    sourceUrl: '',
     boardId: boards[0]?.id ?? '',
   })
 
@@ -20,7 +21,7 @@ function QuickAddBar({ boards, onSave }) {
       return
     }
     onSave(form)
-    setForm((prev) => ({ ...prev, title: '', url: '' }))
+    setForm((prev) => ({ ...prev, title: '', url: '', sourceUrl: '' }))
   }
 
   return (
@@ -29,7 +30,7 @@ function QuickAddBar({ boards, onSave }) {
         <h2 className="text-2xl font-semibold text-slate-900">Quick Add</h2>
         <p className="text-sm text-slate-600">Paste a link, choose a board, and save it instantly.</p>
       </div>
-      <div className="mt-6 grid gap-3 lg:grid-cols-[1.2fr_1fr_0.8fr]">
+      <div className="mt-6 grid gap-3 lg:grid-cols-2">
         <input
           className="w-full rounded-lg border border-slate-300 bg-white px-4 py-2.5 text-sm text-slate-900 placeholder:text-slate-400 shadow-sm outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
           placeholder="Paste URL"
@@ -42,8 +43,14 @@ function QuickAddBar({ boards, onSave }) {
           value={form.title}
           onChange={(event) => setForm((prev) => ({ ...prev, title: event.target.value }))}
         />
+        <input
+          className="w-full rounded-lg border border-slate-300 bg-white px-4 py-2.5 text-sm text-slate-900 placeholder:text-slate-400 shadow-sm outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 lg:col-span-2"
+          placeholder="Source post link (optional)"
+          value={form.sourceUrl}
+          onChange={(event) => setForm((prev) => ({ ...prev, sourceUrl: event.target.value }))}
+        />
         <select
-          className="w-full rounded-lg border border-slate-300 bg-white px-4 py-2.5 text-sm text-slate-900 shadow-sm outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
+          className="w-full rounded-lg border border-slate-300 bg-white px-4 py-2.5 text-sm text-slate-900 shadow-sm outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 lg:col-span-2"
           value={form.boardId}
           onChange={(event) => setForm((prev) => ({ ...prev, boardId: event.target.value }))}
         >

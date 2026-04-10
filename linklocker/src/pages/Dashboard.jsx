@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import BoardGrid from '../components/boards/BoardGrid'
 import CreateBoardModal from '../components/boards/CreateBoardModal'
 import QuickAddBar from '../components/links/QuickAddBar'
@@ -23,12 +23,14 @@ function Dashboard() {
   const [isUpdatingBoard, setIsUpdatingBoard] = useState(false)
   const [actionMessage, setActionMessage] = useState('')
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false)
+  const [boardSearch, setBoardSearch] = useState('')
 
-  async function handleQuickAdd({ title, url, boardId }) {
+  async function handleQuickAdd({ title, url, sourceUrl, boardId }) {
     try {
       await addLink({
         title: title || url,
         url,
+        sourceUrl: sourceUrl?.trim() || null,
         boardId,
         userId: user?.id || 'unknown-user',
       })
@@ -111,6 +113,18 @@ function Dashboard() {
   }
 
   const hasBoards = ownedBoards.length > 0
+  const filteredBoards = useMemo(() => {
+    const search = boardSearch.trim().toLowerCase()
+    if (!search) {
+      return ownedBoards
+    }
+
+    return ownedBoards.filter((board) => {
+      const name = board.name?.toLowerCase() || ''
+      const description = board.description?.toLowerCase() || ''
+      return name.includes(search) || description.includes(search)
+    })
+  }, [boardSearch, ownedBoards])
 
   return (
     <div className="space-y-8">
@@ -169,8 +183,14 @@ function Dashboard() {
             Create Board
           </button>
         </div>
+        <input
+          className="w-full rounded-lg border border-slate-300 bg-white px-4 py-2.5 text-sm text-slate-900 placeholder:text-slate-400 shadow-sm outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
+          placeholder="Search boards by name or description"
+          value={boardSearch}
+          onChange={(event) => setBoardSearch(event.target.value)}
+        />
         <BoardGrid
-          boards={ownedBoards}
+          boards={filteredBoards}
           onToggleVisibility={handleToggleVisibility}
           onDelete={handleDeleteBoard}
           isUpdating={isUpdatingBoard}
