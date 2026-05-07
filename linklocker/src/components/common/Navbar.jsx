@@ -16,16 +16,16 @@ function Navbar() {
     [
       'rounded-full px-3 py-2 text-sm font-medium transition',
       isActive
-        ? 'bg-slate-900 text-white shadow-sm'
-        : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900',
+        ? 'bg-blue-600 text-white shadow-sm'
+        : 'text-gray-400 hover:bg-gray-800 hover:text-white',
     ].join(' ')
 
   const authButtonBase = 'rounded-lg px-4 py-2 text-sm font-semibold transition'
 
   return (
-    <header className="fixed left-1/2 top-4 z-30 w-[min(1280px,calc(100vw-2rem))] -translate-x-1/2 rounded-2xl border border-slate-200 bg-white/90 px-4 py-3 shadow-sm backdrop-blur">
+    <header className="fixed left-1/2 top-4 z-30 w-[min(1280px,calc(100vw-2rem))] -translate-x-1/2 rounded-2xl border border-gray-700 bg-gray-900/90 px-4 py-3 shadow-sm backdrop-blur">
       <div className="mx-auto flex max-w-7xl items-center justify-between gap-3">
-        <NavLink to="/" className="text-base font-semibold tracking-tight text-slate-900" onClick={() => setMobileMenuOpen(false)}>
+        <NavLink to="/" className="text-base font-semibold tracking-tight text-white" onClick={() => setMobileMenuOpen(false)}>
           LinkLocker
         </NavLink>
 
@@ -40,7 +40,7 @@ function Navbar() {
         <div className="hidden items-center gap-2 md:flex">
           <SignedOut>
             <>
-              <NavLink to="/sign-in" className={`${authButtonBase} border border-slate-300 bg-white text-slate-700 hover:bg-slate-50`}>
+              <NavLink to="/sign-in" className={`${authButtonBase} border border-gray-600 bg-gray-800 text-gray-200 hover:bg-gray-700`}>
                 Sign In
               </NavLink>
               <NavLink to="/sign-up" className={`${authButtonBase} bg-blue-600 text-white shadow-sm hover:bg-blue-700`}>
