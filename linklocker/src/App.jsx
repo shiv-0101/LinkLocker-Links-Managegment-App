@@ -12,7 +12,7 @@ import SignUp from './pages/SignUp'
 
 function App() {
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-900">
+    <div className="min-h-screen bg-gray-950 text-gray-100">
       <Navbar />
       <main className="mx-auto min-h-screen w-full max-w-7xl px-4 pb-10 pt-24 sm:px-6 lg:px-8">
         <Routes>
