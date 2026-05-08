@@ -5,19 +5,17 @@ function SignUp() {
     elements: {
       rootBox: 'mx-auto flex w-full justify-center',
       cardBox: 'w-full max-w-md',
-      card: 'rounded-2xl border border-slate-200 shadow-sm',
+      card: 'rounded-[2rem] border border-slate-200 shadow-sm',
     },
   }
 
   return (
-    <div className="flex min-h-[calc(100vh-11rem)] items-center justify-center rounded-3xl bg-slate-50 px-4">
-      <div className="w-full max-w-5xl">
-        <div className="mb-8 space-y-2 text-center">
-          <p className="text-sm font-semibold uppercase tracking-[0.2em] text-blue-600">Get started</p>
-          <h1 className="text-3xl font-semibold tracking-tight text-slate-900">Create your LinkLocker account</h1>
-          <p className="mx-auto max-w-2xl text-sm leading-6 text-slate-600">
-            Create an account to organize your links into private and public boards.
-          </p>
+    <div className="flex min-h-[calc(100vh-11rem)] items-center justify-center px-4">
+      <div className="w-full max-w-md">
+        <div className="mb-6 space-y-2 text-center">
+          <p className="text-xs uppercase tracking-[0.2em] text-slate-500">Get started</p>
+          <h1 className="text-2xl font-medium text-slate-900">Create account</h1>
+          <p className="mx-auto max-w-2xl text-sm leading-6 text-slate-600">Create a simple workspace for saving links into private and public boards.</p>
         </div>
         <ClerkSignUp
           routing="path"
