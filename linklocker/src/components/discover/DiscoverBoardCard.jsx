@@ -1,32 +1,69 @@
 import { Link } from 'react-router-dom'
 
+function ButtonGlyph({ name, color }) {
+  const stroke = color || 'currentColor'
+  switch (name) {
+    case 'open':
+      return (
+        <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M7 7h10v10" stroke={stroke} />
+          <path d="M7 17 17 7" stroke={stroke} />
+        </svg>
+      )
+    case 'save':
+    default:
+      return (
+        <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M5 6h14v12H5z" stroke={stroke} />
+          <path d="M8 6V4h8v2" stroke={stroke} />
+          <path d="M8 12h8" stroke={stroke} />
+        </svg>
+      )
+  }
+}
+
 function DiscoverBoardCard({ board, onCopy }) {
   return (
-    <article className="flex h-full flex-col justify-between rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition hover:border-slate-300 hover:shadow-md">
-      <div className="space-y-3">
+    <article className="flex h-full flex-col justify-between rounded-xl border border-slate-200 bg-white p-4">
+      <div className="space-y-2.5">
         <div className="flex items-start justify-between gap-3">
-          <h3 className="text-lg font-semibold text-slate-900">{board.name}</h3>
-          <span className="inline-flex rounded-full bg-blue-50 px-2.5 py-1 text-xs font-medium text-blue-700">
-            by community
+          <div className="space-y-1">
+            <h3 className="text-lg font-medium text-slate-900">{board.name}</h3>
+            <p className="text-sm text-slate-500">{board.linkCount} links</p>
+          </div>
+          <span className="inline-flex rounded-full bg-slate-100 px-2.5 py-1 text-xs font-medium text-slate-600">
+            Public board
           </span>
         </div>
         <p className="text-sm leading-6 text-slate-600">{board.description}</p>
-        <p className="text-sm font-medium text-slate-500">{board.linkCount} links</p>
       </div>
-      <div className="mt-5 flex flex-wrap gap-2">
-        <Link
-          to={`/board/${board.id}`}
-          className="inline-flex rounded-lg bg-slate-900 px-4 py-2 text-sm font-semibold text-white transition hover:bg-slate-800"
-        >
-          Open Board
-        </Link>
-        <button
-          type="button"
-          className="inline-flex rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-50"
-          onClick={() => onCopy(board)}
-        >
-          Save to My Board
-        </button>
+      <div className="mt-4 flex items-center gap-2">
+        <div className="relative group">
+          <Link
+            to={`/board/${board.id}`}
+            aria-label="Open board"
+            className="inline-flex items-center justify-center rounded-md border border-slate-900 bg-slate-900 p-2 text-sm font-medium text-white transition-colors hover:bg-slate-800"
+          >
+            <ButtonGlyph name="open" color="#fff" />
+          </Link>
+          <span className="pointer-events-none absolute -bottom-9 left-1/2 hidden -translate-x-1/2 whitespace-nowrap rounded-md bg-slate-800 px-2 py-1 text-xs text-white shadow-sm group-hover:block">
+            Open
+          </span>
+        </div>
+
+        <div className="relative group">
+          <button
+            type="button"
+            aria-label="Save to my board"
+            className="inline-flex items-center justify-center rounded-md border border-slate-200 bg-white p-2 text-sm font-medium text-slate-900 transition-colors hover:bg-slate-50"
+            onClick={() => onCopy(board)}
+          >
+            <ButtonGlyph name="save" />
+          </button>
+          <span className="pointer-events-none absolute -bottom-9 left-1/2 hidden -translate-x-1/2 whitespace-nowrap rounded-md bg-slate-800 px-2 py-1 text-xs text-white shadow-sm group-hover:block">
+            Save
+          </span>
+        </div>
       </div>
     </article>
   )
