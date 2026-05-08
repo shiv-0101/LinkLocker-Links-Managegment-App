@@ -12,9 +12,9 @@ import SignUp from './pages/SignUp'
 
 function App() {
   return (
-    <div className="min-h-screen bg-gray-950 text-gray-100">
+    <div className="min-h-screen bg-[#f7f8fb] text-slate-900">
       <Navbar />
-      <main className="mx-auto min-h-screen w-full max-w-7xl px-4 pb-10 pt-24 sm:px-6 lg:px-8">
+      <main className="mx-auto min-h-screen w-full max-w-5xl px-4 pb-20 pt-24 sm:px-6 lg:px-8">
         <Routes>
           <Route path="/" element={<LandingPage />} />
           <Route path="/dashboard" element={<RequireAuth><Dashboard /></RequireAuth>} />
