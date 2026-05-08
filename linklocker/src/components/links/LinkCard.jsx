@@ -2,11 +2,14 @@ import { formatDate, formatDomain } from '../../utils/formatters'
 
 function LinkCard({ link, canEdit }) {
   return (
-    <article className="flex h-full flex-col rounded-xl border border-slate-200 bg-white p-3.5 shadow-sm transition hover:border-slate-300 hover:shadow-md">
-      <div className="space-y-1.5">
-        <h3 className="text-sm font-semibold leading-6 text-slate-900">{link.title}</h3>
+    <article className="flex h-full flex-col rounded-xl border border-slate-200 bg-white p-4">
+      <div className="space-y-2.5">
+        <div className="flex items-start justify-between gap-3">
+          <h3 className="text-sm font-medium leading-6 text-slate-900">{link.title}</h3>
+          <span className="rounded-full bg-slate-100 px-2 py-1 text-[11px] text-slate-500">{formatDomain(link.url)}</span>
+        </div>
         <a
-          className="block truncate text-xs text-blue-700 hover:text-blue-800"
+          className="block truncate text-xs text-slate-500"
           href={link.url}
           target="_blank"
           rel="noreferrer"
@@ -14,15 +17,12 @@ function LinkCard({ link, canEdit }) {
         >
           {link.url}
         </a>
-        <div className="space-y-0.5 text-xs text-slate-500">
-          <p>{formatDomain(link.url)}</p>
-          <p>Saved on {formatDate(link.createdAt)}</p>
-        </div>
+        <p className="text-xs text-slate-500">Saved on {formatDate(link.createdAt)}</p>
       </div>
 
       <div className="mt-3 flex items-center justify-end gap-1">
         <a
-          className="inline-flex h-8 w-8 items-center justify-center rounded-md border border-slate-300 text-slate-700 transition hover:bg-slate-50"
+          className="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-slate-200 text-slate-700 transition-colors hover:bg-slate-50"
           href={link.url}
           target="_blank"
           rel="noreferrer"
@@ -38,7 +38,7 @@ function LinkCard({ link, canEdit }) {
         {canEdit ? (
           <button
             type="button"
-            className="inline-flex h-8 w-8 items-center justify-center rounded-md border border-slate-300 text-slate-700 transition hover:bg-slate-50"
+            className="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-slate-200 text-slate-700 transition-colors hover:bg-slate-50"
             title="Edit link"
             aria-label="Edit link"
           >
