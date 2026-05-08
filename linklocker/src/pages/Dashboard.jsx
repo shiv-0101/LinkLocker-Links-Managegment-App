@@ -127,39 +127,45 @@ function Dashboard() {
   }, [boardSearch, ownedBoards])
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-5">
+      <section className="space-y-2">
+        <p className="text-xs uppercase tracking-[0.2em] text-slate-500">Dashboard</p>
+        <h1 className="text-2xl font-medium text-slate-900">Your saved links</h1>
+        <p className="max-w-2xl text-sm leading-6 text-slate-600">
+          Keep quick add close, keep boards simple, and keep everything easy to scan.
+        </p>
+      </section>
+
       {boardsError ? (
-        <section className="rounded-3xl border border-amber-200 bg-amber-50 p-5 text-sm text-amber-900">
+        <section className="rounded-lg border border-amber-200 bg-amber-50 p-4 text-sm text-amber-900">
           Database sync error: {boardsError}
         </section>
       ) : null}
 
       {boardsLoading ? (
-        <section className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+        <section className="rounded-lg border border-slate-200 bg-white p-4">
           <p className="text-sm text-slate-600">Loading your boards...</p>
         </section>
       ) : null}
 
       {actionMessage ? (
-        <section className="rounded-3xl border border-slate-200 bg-white p-5 text-sm text-slate-700 shadow-sm">
+        <section className="rounded-lg border border-slate-200 bg-white p-4 text-sm text-slate-700">
           {actionMessage}
         </section>
       ) : null}
 
       {!boardsLoading ? (
         hasBoards ? (
-          <QuickAddBar boards={ownedBoards} onSave={handleQuickAdd} />
+          <QuickAddBar boards={ownedBoards} onSave={handleQuickAdd} onCreateBoard={() => setIsCreateModalOpen(true)} />
         ) : (
-          <section className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
-            <div className="space-y-3">
-              <h2 className="text-2xl font-semibold text-slate-900">Welcome to LinkLocker</h2>
-              <p className="max-w-2xl text-sm leading-6 text-slate-600">
-                Create your first board so you can finish sign-up and start saving links in the right place.
-              </p>
-            </div>
+          <section className="rounded-lg border border-slate-200 bg-white p-5">
+            <h2 className="text-lg font-medium text-slate-900">Create your first board</h2>
+            <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-600">
+              Add one board to unlock fast saving and keep the app organized from the start.
+            </p>
             <button
               type="button"
-              className="mt-5 inline-flex rounded-lg bg-blue-600 px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-60"
+              className="mt-4 inline-flex rounded-lg border border-slate-200 bg-white px-4 py-2 text-sm font-medium text-slate-900 transition-colors hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-60"
               onClick={handleCreateStarterBoard}
               disabled={isCreatingBoard || boardsLoading}
             >
@@ -172,19 +178,19 @@ function Dashboard() {
       <section className="space-y-4">
         <div className="flex flex-wrap items-end justify-between gap-3">
           <div>
-            <h2 className="text-2xl font-semibold text-slate-900">My Boards</h2>
-            <p className="mt-1 text-sm text-slate-600">Keep boards structured and easy to scan.</p>
+            <h2 className="text-xl font-medium text-slate-900">My Boards</h2>
+            <p className="mt-1 text-sm text-slate-600">Readable, simple, and quick to scan.</p>
           </div>
           <button
             type="button"
-            className="inline-flex rounded-lg bg-slate-900 px-4 py-2 text-sm font-semibold text-white transition hover:bg-slate-800"
+            className="inline-flex rounded-lg border border-slate-200 bg-white px-4 py-2 text-sm font-medium text-slate-900 transition-colors hover:bg-slate-50"
             onClick={() => setIsCreateModalOpen(true)}
           >
             Create Board
           </button>
         </div>
         <input
-          className="w-full rounded-lg border border-slate-300 bg-white px-4 py-2.5 text-sm text-slate-900 placeholder:text-slate-400 shadow-sm outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
+          className="w-full rounded-lg border border-slate-200 bg-white px-4 py-3 text-sm text-slate-900 placeholder:text-slate-400 outline-none transition-colors focus:border-slate-400"
           placeholder="Search boards by name or description"
           value={boardSearch}
           onChange={(event) => setBoardSearch(event.target.value)}
@@ -197,23 +203,25 @@ function Dashboard() {
         />
       </section>
 
-      <section className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
-        <h2 className="text-xl font-semibold text-slate-900">Recent Links</h2>
-        <p className="mt-1 text-sm text-slate-600">Your latest saved links across all boards.</p>
+      <section className="space-y-3">
+        <div>
+          <h2 className="text-xl font-medium text-slate-900">Recent Links</h2>
+          <p className="mt-1 text-sm text-slate-600">Your latest saved links across all boards.</p>
+        </div>
 
         {recentLinks.length ? (
-          <ul className="mt-4 space-y-2">
+          <ul className="space-y-2">
             {recentLinks.map((link) => (
-              <li key={link.id} className="rounded-xl border border-slate-200 bg-slate-50 px-4 py-3">
-                <p className="truncate text-sm font-semibold text-slate-900">{link.title}</p>
-                <a className="truncate text-sm text-blue-700 hover:text-blue-800" href={link.url} target="_blank" rel="noreferrer">
+              <li key={link.id} className="border-b border-slate-200 px-1 py-3 last:border-b-0">
+                <p className="truncate text-sm font-medium text-slate-900">{link.title}</p>
+                <a className="truncate text-sm text-slate-500" href={link.url} target="_blank" rel="noreferrer">
                   {link.url}
                 </a>
               </li>
             ))}
           </ul>
         ) : (
-          <p className="mt-4 text-sm text-slate-500">No links saved yet.</p>
+          <p className="text-sm text-slate-500">No links saved yet.</p>
         )}
       </section>
 
