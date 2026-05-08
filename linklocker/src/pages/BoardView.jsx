@@ -15,24 +15,28 @@ function BoardView() {
 
   if (!board) {
     return (
-      <section className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-        <h2 className="text-2xl font-semibold text-slate-900">Board not found</h2>
+      <section className="rounded-lg border border-slate-200 bg-white p-5">
+        <h2 className="text-xl font-medium text-slate-900">Board not found</h2>
         <p className="mt-2 text-sm text-slate-600">Try opening an existing board from Dashboard.</p>
       </section>
     )
   }
 
   return (
-    <div className="space-y-8">
-      <section className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+    <div className="space-y-5">
+      <section className="rounded-lg border border-slate-200 bg-white p-5">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
           <div className="space-y-2">
-            <h1 className="text-3xl font-semibold tracking-tight text-slate-900">{board.name}</h1>
+            <h1 className="text-2xl font-medium text-slate-900">{board.name}</h1>
             <p className="max-w-2xl text-sm leading-6 text-slate-600">{board.description}</p>
           </div>
-          <span className="inline-flex w-fit rounded-full border border-slate-200 bg-slate-50 px-3 py-1 text-xs font-semibold uppercase tracking-[0.2em] text-slate-600">
-            {board.isPublic ? 'Public' : 'Private'}
+          <span className="inline-flex w-fit rounded-full border border-slate-200 bg-slate-50 px-3 py-1 text-xs uppercase tracking-[0.2em] text-slate-600">
+            {board.linkCount} links
           </span>
+        </div>
+        <div className="mt-4 flex flex-wrap gap-2 text-xs text-slate-500">
+          <span className="rounded-full border border-slate-200 bg-slate-50 px-3 py-1">{board.isPublic ? 'Public' : 'Private'}</span>
+          <span className="rounded-full border border-slate-200 bg-slate-50 px-3 py-1">Board view</span>
         </div>
       </section>
       <LinkGrid links={links} currentUserId={user?.id} />
