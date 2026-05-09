@@ -1,13 +1,9 @@
 import { useMemo } from 'react'
 import { useAuth as useClerkAuth } from '@clerk/clerk-react'
-import { createSupabaseClient, isDemoMode } from '../lib/supabase'
+import { createSupabaseClient } from '../lib/supabase'
 
 export function useSupabaseClient() {
   const { getToken } = useClerkAuth()
-
-  if (isDemoMode) {
-    return null
-  }
 
   return useMemo(
     () =>
