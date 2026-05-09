@@ -23,7 +23,7 @@ function BoardView() {
   }
 
   return (
-    <div className="space-y-5">
+    <div className="space-y-8">
       <section className="rounded-lg border border-slate-200 bg-white p-5">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
           <div className="space-y-2">
@@ -39,7 +39,9 @@ function BoardView() {
           <span className="rounded-full border border-slate-200 bg-slate-50 px-3 py-1">Board view</span>
         </div>
       </section>
-      <LinkGrid links={links} currentUserId={user?.id} />
+      <section className="border-t border-slate-200/70 pt-6">
+        <LinkGrid links={links} currentUserId={user?.id} />
+      </section>
     </div>
   )
 }

@@ -57,8 +57,8 @@ function Discover() {
   }
 
   return (
-    <div className="space-y-5">
-      <section className="space-y-2">
+    <div className="space-y-8">
+      <section className="space-y-2 border-b border-slate-200/70 pb-6">
         <h1 className="text-2xl font-medium text-slate-900">Discover</h1>
         <p className="max-w-2xl text-sm leading-6 text-slate-600">
           Browse public boards and copy useful links into your own boards.
