@@ -127,8 +127,8 @@ function Dashboard() {
   }, [boardSearch, ownedBoards])
 
   return (
-    <div className="space-y-5">
-      <section className="space-y-2">
+    <div className="space-y-8">
+      <section className="space-y-2 border-b border-slate-200/70 pb-6">
         <p className="text-xs uppercase tracking-[0.2em] text-slate-500">Dashboard</p>
         <h1 className="text-2xl font-medium text-slate-900">Your saved links</h1>
         <p className="max-w-2xl text-sm leading-6 text-slate-600">
@@ -156,7 +156,9 @@ function Dashboard() {
 
       {!boardsLoading ? (
         hasBoards ? (
-          <QuickAddBar boards={ownedBoards} onSave={handleQuickAdd} onCreateBoard={() => setIsCreateModalOpen(true)} />
+          <section className="rounded-lg border border-slate-200 bg-white p-4">
+            <QuickAddBar boards={ownedBoards} onSave={handleQuickAdd} onCreateBoard={() => setIsCreateModalOpen(true)} />
+          </section>
         ) : (
           <section className="rounded-lg border border-slate-200 bg-white p-5">
             <h2 className="text-lg font-medium text-slate-900">Create your first board</h2>
@@ -175,7 +177,7 @@ function Dashboard() {
         )
       ) : null}
 
-      <section className="space-y-4">
+      <section className="space-y-4 border-b border-slate-200/70 pb-6">
         <div className="flex flex-wrap items-end justify-between gap-3">
           <div>
             <h2 className="text-xl font-medium text-slate-900">My Boards</h2>
