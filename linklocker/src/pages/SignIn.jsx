@@ -5,7 +5,7 @@ function SignIn() {
     elements: {
       rootBox: 'mx-auto flex w-full justify-center',
       cardBox: 'w-full max-w-md',
-      card: 'rounded-[2rem] border border-slate-200 shadow-sm',
+      card: 'rounded-xl border border-slate-200 shadow-sm',
     },
   }
 

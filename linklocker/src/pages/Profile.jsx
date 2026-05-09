@@ -15,7 +15,7 @@ function Profile() {
   }
 
   return (
-    <div className="max-w-2xl space-y-4">
+    <div className="max-w-2xl space-y-6">
       <section className="rounded-lg border border-slate-200 bg-white p-5">
         <p className="text-xs uppercase tracking-[0.2em] text-slate-500">Account</p>
         <h1 className="mt-2 text-2xl font-medium text-slate-900">Profile</h1>
