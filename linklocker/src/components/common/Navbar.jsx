@@ -100,7 +100,7 @@ function Navbar() {
                   </Link>
                   <Link
                     to="/sign-up"
-                    className={`${authButtonBase} border border-slate-900 bg-slate-900 text-white`}
+                    className={`${authButtonBase} borderrounded-lg px-3 py-2 text-sm font-medium transition-colors border border-slate-900 text-slate-900`}
                   >
                     Sign Up
                   </Link>
