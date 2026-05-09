@@ -1,11 +1,12 @@
-import { RedirectToSignIn, SignedIn, SignedOut } from '@clerk/clerk-react'
+import { Navigate } from 'react-router-dom'
+import { SignedIn, SignedOut } from '@clerk/clerk-react'
 
 function RequireAuth({ children }) {
   return (
     <>
       <SignedIn>{children}</SignedIn>
       <SignedOut>
-        <RedirectToSignIn />
+        <Navigate to="/sign-up" replace />
       </SignedOut>
     </>
   )
