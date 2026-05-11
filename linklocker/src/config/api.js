@@ -1,9 +1,14 @@
 const baseUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000'
 
+// handle api response errors uniformly
+function handleApiError(status) {
+  throw new Error(`Request failed with status ${status}`)
+}
+
 export async function apiGet(path) {
   const response = await fetch(`${baseUrl}${path}`)
   if (!response.ok) {
-    throw new Error(`Request failed with status ${response.status}`)
+    handleApiError(response.status)
   }
   return response.json()
 }
@@ -18,7 +23,7 @@ export async function apiPost(path, body) {
   })
 
   if (!response.ok) {
-    throw new Error(`Request failed with status ${response.status}`)
+    handleApiError(response.status)
   }
 
   return response.json()
