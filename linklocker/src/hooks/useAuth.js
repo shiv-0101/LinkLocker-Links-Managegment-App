@@ -1,5 +1,9 @@
 import { useUser } from '@clerk/clerk-react'
 
+/**
+ * Hook for accessing current user authentication state
+ * @returns {Object} Authentication object with user info
+ */
 export function useAuth() {
   const { isLoaded, isSignedIn, user } = useUser()
 
