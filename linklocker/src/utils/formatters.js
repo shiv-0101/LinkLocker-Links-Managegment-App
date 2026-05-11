@@ -13,3 +13,10 @@ export function formatDate(value) {
     year: 'numeric',
   })
 }
+
+export function formatTime(value) {
+  return new Date(value).toLocaleTimeString('en-IN', {
+    hour: '2-digit',
+    minute: '2-digit',
+  })
+}
