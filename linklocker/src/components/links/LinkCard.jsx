@@ -2,19 +2,13 @@ import { formatDate, formatDomain } from '../../utils/formatters'
 
 function LinkCard({ link, canEdit }) {
   return (
-    <article className="flex h-full flex-col rounded-xl border border-slate-200 bg-white p-4">
+    <article className="min-w-0 flex h-full flex-col rounded-xl border border-slate-200 bg-white p-4">
       <div className="space-y-2.5">
         <div className="flex items-start justify-between gap-3">
-          <h3 className="text-sm font-medium leading-6 text-slate-900">{link.title}</h3>
+          <h3 className="wrap-break-word text-sm font-medium leading-6 text-slate-900">{link.title}</h3>
           <span className="rounded-full bg-slate-100 px-2 py-1 text-[11px] text-slate-500">{formatDomain(link.url)}</span>
         </div>
-        <a
-          className="block truncate text-xs text-slate-500"
-          href={link.url}
-          target="_blank"
-          rel="noreferrer"
-          title={link.url}
-        >
+        <a className="mt-1 block w-full break-all text-xs text-slate-500" href={link.url} target="_blank" rel="noreferrer" title={link.url}>
           {link.url}
         </a>
         <p className="text-xs text-slate-500">Saved on {formatDate(link.createdAt)}</p>
