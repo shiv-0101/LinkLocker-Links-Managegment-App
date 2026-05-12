@@ -212,11 +212,16 @@ function Dashboard() {
         </div>
 
         {recentLinks.length ? (
-          <ul className="space-y-2">
+          <ul className="space-y-2 overflow-hidden">
             {recentLinks.map((link) => (
-              <li key={link.id} className="border-b border-slate-200 px-1 py-3 last:border-b-0">
-                <p className="truncate text-sm font-medium text-slate-900">{link.title}</p>
-                <a className="truncate text-sm text-slate-500" href={link.url} target="_blank" rel="noreferrer">
+              <li key={link.id} className="min-w-0 border-b border-slate-200 px-1 py-3 last:border-b-0">
+                <p className="wrap-break-word text-sm font-medium text-slate-900">{link.title}</p>
+                <a
+                  className="mt-1 block w-full break-all text-sm text-slate-500"
+                  href={link.url}
+                  target="_blank"
+                  rel="noreferrer"
+                >
                   {link.url}
                 </a>
               </li>
